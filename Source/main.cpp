@@ -1,8 +1,9 @@
 #include "tree.h"
 
-int main(){
+int main(){  // TODO 0-... -> -...
 
-    expression_t expr = get_tree_from_file("expression.txt");
-    fprintf(stderr, "%d %lf %p", expr->val.op, expr->val.num, expr->right);
+    expression_t expr = get_general("expression.txt");
     DUMP(expr);
+
+    DUMP(simplification_of_expression(D_(expr, 'x')));
 }
