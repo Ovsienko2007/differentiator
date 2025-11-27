@@ -280,7 +280,7 @@ static expression_t find_derivative_of_log(expression_t expression, int par){
                                               LN_(C_(expression->left))
                                           )
                                       ),
-                                      D_(C_(expression->left), par)
+                                      D_(C_(expression->right), par)
                                   );
 
     destroy_expression(expression);

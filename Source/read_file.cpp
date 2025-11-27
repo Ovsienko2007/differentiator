@@ -156,17 +156,20 @@ static expression_t get_expression(str_code *data){
     node_t *par1 = get_term(data);
 
     skip_spaces2(data);
-    while (*data->data == '+' || *data->data == '-'){
-        bool is_sum = (*data->data == '+');
+    while (*data->data == '+' || *data->data == '-' || *data->data == '^'){
+        char is_sum = *data->data;
         data->data++;
 
         node_t *par2 = get_term(data);
 
-        if (is_sum){
+        if (is_sum == '+'){
             par1 = ADD_(par1, par2);
         }
-        else{
+        else if (is_sum == '-'){
             par1 = SUB_(par1, par2);
+        }
+        else{
+            par1 = POW_(par1, par2);
         }
     }
 
@@ -280,6 +283,30 @@ static expression_t get_one_param_func(str_code *data){
                 return create_op_node(op_list[pos_op_list].op, get_expression(data), nullptr);
             }
         }
+    }
+    if (strncmp(data->data, "log_{", strlen("log_{")) == 0){
+        data->data += strlen("log_{");
+
+        node_t *par1 = get_expression(data);
+
+        if (*data->data != '}'){
+            data->error = true;
+        }
+        data->data++;
+
+        if (*data->data != '{'){
+            data->error = true;
+        }
+        data->data++;
+
+        node_t *par2 = get_expression(data);
+
+        if (*data->data != '}'){
+            data->error = true;
+        }
+        data->data++;
+
+        return create_op_node(LOG, par1, par2);
     }
 
     new_node = get_var(data);
